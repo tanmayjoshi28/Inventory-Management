@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+{% csrf_token %}
+<span class="container">
+    <center>
+    <h1>List of all items in {{ inv.inv_class }}</h1>
+    <a href="{% url 'inventory:homepage' %}"><button style="margin-right: 50px;margin-top: 10px " type="button" class="btn btn-primary" >Home</button></a>
+    <button style="margin-left: 50px;margin-right: 50px;margin-top: 10px " type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Add new item
+    </button>
+    <a href="{% url 'users:logout' %}" >
+        <button style="margin-left: 50px;margin-top: 10px " type="button" class="btn btn-primary" >Log out</button>
+    </a>
+    <p style="color:red;padding-top: 10px">{{ error }}</p>
+    </center>
+
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h4 class="modal-title">Add new item in {{ inv.inv_class }}</h4>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">&times;</button>
+        </div>
+
+        <form action="{% url 'inventory:new_item' item_id %}" method="post">
+            {% csrf_token %}
+        <div class="modal-body">
+            <label>Item name :-</label>
+            <br>
+            <input type="text" name="name">
+            <br>
+            <label>Price of each  :-</label>
+            <br>
+            <input type="text" name="price">
+            <br>
+            <label>Total Quantity</label>
+            <br>
+            <input type="text" name="quantity">
+            <br>
+            <label>Status</label>
+            <br>
+            <input type="text" name="status" list="options" >
+            <datalist id="options">
+                <option value="Available">
+                <option value="Need Restocking">
+                <option value="SOLD">
+            </datalist>
+            <br>
+
+            <div class="modal-footer">
+                <button type="submit" style="background-color: green" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</span>
+
+
+<div style="text-align:center;">
+<table class="table" align="center" >
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Item name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Status</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    {% for object in list_items %}
+    <tbody>
+        <tr>
+            <td>{{object.item_name}}</td>
+            <td>{{ object.item_price }} Rs.</td>
+            <td>{{ object.total_no }}</td>
+            <td>{{ object.status }}</td>
+            <td><a href="{% url 'inventory:edit_item' object.pk %}" class="btn btn-primary" style="background-color:green;color:white" >Edit</a></td>
+            <td><a href="{% url 'inventory:del_item' object.pk  %}" class="btn btn-primary" style="background-color:red;color:white">Delete</a></td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>
